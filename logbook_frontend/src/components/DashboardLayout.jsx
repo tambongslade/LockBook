@@ -148,11 +148,11 @@ const DashboardLayout = ({ children }) => {
 
         {/* Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          {children ? children : <Outlet />}
-        </main>
+         {children ? children : <Outlet />}
+      </main>
       </div>
     </div>
   );
 };
 
-export default DashboardLayout;
+export default DashboardLayout; 

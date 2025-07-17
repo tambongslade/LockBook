@@ -58,7 +58,8 @@ const ManageUsers = () => {
     email: '',
     password: '',
     role: 'DELEGATE', 
-    department: '' 
+    department: '',
+    level: '' // Add level field
   });
   const [addError, setAddError] = useState('');
 
@@ -174,7 +175,7 @@ const ManageUsers = () => {
 
   // --- Add User Handlers --- 
   const handleAddUserClick = () => {
-    setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'DELEGATE', department: departments[0]?._id || '' });
+    setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'DELEGATE', department: departments[0]?._id || '', level: '' });
     setAddError('');
     setIsAddModalOpen(true);
   };
@@ -194,6 +195,12 @@ const ManageUsers = () => {
     setAddError('');
     if (!newUser.firstName || !newUser.lastName || !newUser.email || !newUser.password || !newUser.role || !newUser.department) {
       setAddError('All fields are required.');
+      return;
+    }
+
+    // Add validation for delegate level
+    if (newUser.role === 'DELEGATE' && !newUser.level) {
+      setAddError('Level is required for delegates.');
       return;
     }
 
@@ -385,6 +392,21 @@ const ManageUsers = () => {
                          <option value="ADMIN">ADMIN</option>
                      </select>
                  </div>
+
+                 {/* Level field for delegates */}
+                 {newUser.role === 'DELEGATE' && (
+                   <div>
+                     <label htmlFor="add-level" className="block text-sm font-medium text-gray-700">Level</label>
+                     <select name="level" id="add-level" value={newUser.level} onChange={handleNewUserInputChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                         <option value="" disabled>Select Level</option>
+                         <option value="200">200 Level</option>
+                         <option value="300">300 Level</option>
+                         <option value="400">400 Level</option>
+                         <option value="500">500 Level</option>
+                     </select>
+                   </div>
+                 )}
+
                  <div>
                      <label htmlFor="add-department" className="block text-sm font-medium text-gray-700">Department</label>
                      <select name="department" id="add-department" value={newUser.department} onChange={handleNewUserInputChange} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">

@@ -24,7 +24,8 @@ const UserFormModal = ({ user, onClose, onSave, defaultRole = 'DELEGATE' }) => {
     email: '',
     role: defaultRole,
     department: '',
-    password: '' // Only for adding new users
+    password: '', // Only for adding new users
+    level: '' // Add level field
   });
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -59,7 +60,8 @@ const UserFormModal = ({ user, onClose, onSave, defaultRole = 'DELEGATE' }) => {
         email: user.email || '',
         role: user.role || defaultRole,
         department: user.department?._id || user.department || (departments.length > 0 ? departments[0]._id : ''),
-        password: '' // Don't prefill password for editing
+        password: '', // Don't prefill password for editing
+        level: user.level || '' // Add level field
       });
     } else {
       // Reset for adding, ensuring defaultRole and potential default department are set
@@ -69,7 +71,8 @@ const UserFormModal = ({ user, onClose, onSave, defaultRole = 'DELEGATE' }) => {
         email: '',
         role: defaultRole,
         department: departments.length > 0 ? departments[0]._id : '',
-        password: ''
+        password: '',
+        level: '' // Add level field
       });
     }
   }, [user, isEditing, defaultRole, departments]);
@@ -97,6 +100,13 @@ const UserFormModal = ({ user, onClose, onSave, defaultRole = 'DELEGATE' }) => {
 
     if (!userData.department) {
       setError('Please select a department.');
+      setLoading(false);
+      return;
+    }
+
+    // Add validation for delegate level
+    if (userData.role === 'DELEGATE' && !userData.level) {
+      setError('Level is required for delegates.');
       setLoading(false);
       return;
     }
@@ -168,6 +178,20 @@ const UserFormModal = ({ user, onClose, onSave, defaultRole = 'DELEGATE' }) => {
             </select>
           </div>
         </div>
+
+        {/* Level field for delegates */}
+        {formData.role === 'DELEGATE' && (
+          <div>
+            <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level:</label>
+            <select name="level" id="level" value={formData.level} onChange={handleChange} required className="mt-1 form-select">
+              <option value="" disabled>Select Level</option>
+              <option value="200">200 Level</option>
+              <option value="300">300 Level</option>
+              <option value="400">400 Level</option>
+              <option value="500">500 Level</option>
+            </select>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex justify-end space-x-2 pt-4 border-t mt-6">
